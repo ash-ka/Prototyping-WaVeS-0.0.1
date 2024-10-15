@@ -969,6 +969,7 @@ GameObject:
   - component: {fileID: 637975312937043576}
   - component: {fileID: 3821528990812142465}
   - component: {fileID: 8229066041687095045}
+  - component: {fileID: 4126290421486988040}
   m_Layer: 0
   m_Name: Animal_Horse_Black
   m_TagString: Animal
@@ -984,7 +985,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5720814140287010284}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.30874422, z: -0, w: 0.9511451}
+  m_LocalRotation: {x: 0, y: -0.30874318, z: 0, w: 0.95114547}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
@@ -1052,6 +1053,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 4
+--- !u!54 &4126290421486988040
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5720814140287010284}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &5871438012249169158
 GameObject:
   m_ObjectHideFlags: 0

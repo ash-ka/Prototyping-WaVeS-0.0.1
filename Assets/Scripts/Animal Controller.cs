@@ -41,20 +41,36 @@ public class AnimalController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-
-        if (other.gameObject.CompareTag("Boundary Object"))
+        if (other.gameObject.CompareTag("Boundary Object")) // Anmials will take u-turns when they collide with the boundary
         {
             transform.forward = -transform.forward;
         }
         else if (other.gameObject.CompareTag("Animal")) // Anmials will take u-turns when they collide
         {
-            transform.forward = -transform.forward;
-            other.transform.forward = -other.transform.forward;
+            transform.Rotate(Vector3.up, 120.0f);
+            //            transform.forward = -transform.forward;
         }
         else if (other.gameObject.CompareTag("Human")) // Animals will take u-turn when collide with humans
         {
             transform.forward = -transform.forward;
         }
-
     }
+
+    /*
+    private void OnCollisionEnter(Collision collision)
+    {
+
+        if (collision.gameObject.CompareTag("Animal")) // Anmials will take u-turns when they collide
+        {
+            transform.forward = -transform.forward;
+            collision.transform.forward = -collision.transform.forward;
+        }
+        else if (collision.gameObject.CompareTag("Human")) // Animals will take u-turn when collide with humans
+        {
+            transform.forward = -transform.forward;
+        }
+
+    }*/
+
+
 }
