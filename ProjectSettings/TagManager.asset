@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Boundary Object
   - Animal
+  - Human
   layers:
   - Default
   - TransparentFX
