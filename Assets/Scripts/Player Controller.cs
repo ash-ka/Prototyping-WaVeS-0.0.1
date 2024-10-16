@@ -16,10 +16,14 @@ public class PlayerController : MonoBehaviour
     private float xStart;
     private float zStart;
     private float xMin, zMin, xMax, zMax;
+    public GameObject projectilePrefab;
+    public float heightOffset = 0.8f;
+
 
     // Start is called before the first frame update
     void Start()
     {
+        // Initially the third person view camera behind the player is enabled
         topCamera.enabled = false;
         mainCamera.enabled = false;
         thirdCamera.enabled = true;
@@ -44,7 +48,6 @@ public class PlayerController : MonoBehaviour
 
         // Turning the player
         transform.Rotate(Vector3.up, Time.deltaTime * turnSpeed * horizontalInput);
-
 
         // Switching camera view
         if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -77,5 +80,11 @@ public class PlayerController : MonoBehaviour
             transform.position = new Vector3(transform.position.x, transform.position.y, zMax);
         if (transform.position.z < zMin)
             transform.position = new Vector3(transform.position.x, transform.position.y, zMin);
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            // Launch a projectile from the player
+            Instantiate(projectilePrefab, transform.position + new Vector3(0, heightOffset, 0), transform.rotation);
+        }
     }
 }

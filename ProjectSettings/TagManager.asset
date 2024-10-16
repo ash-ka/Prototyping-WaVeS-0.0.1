@@ -7,6 +7,7 @@ TagManager:
   - Boundary Object
   - Animal
   - Human
+  - Universal Food
   layers:
   - Default
   - TransparentFX
