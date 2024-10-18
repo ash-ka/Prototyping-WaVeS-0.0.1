@@ -8,6 +8,16 @@ TagManager:
   - Animal
   - Human
   - Universal Food
+  - Base Station
+  - Borderline
+  - Hard Light
+  - Soft Light
+  - Spot Light
+  - Stop Spawn (1)
+  - Stop Spawn (2)
+  - Stop Spawn (3)
+  - Stop Spawn (4)
+  - Stop Spawn (5)
   layers:
   - Default
   - TransparentFX

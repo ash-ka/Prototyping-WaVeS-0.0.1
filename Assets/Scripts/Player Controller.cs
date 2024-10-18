@@ -1,16 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public ParticleSystem explosionParticles;
+
     // Camera
     public Camera topCamera;
     public Camera mainCamera;
     public Camera thirdCamera;
 
     private float speed = 10.0f;
-    private float turnSpeed = 45.0f;
+    private float turnSpeed = 90.0f;
     private float horizontalInput;
     private float verticalInput;
     private float xRange = 30.0f;
@@ -28,6 +32,8 @@ public class PlayerController : MonoBehaviour
     private AudioSource playerAudioSource;
     public AudioClip jumpSound;
 
+    public Light[] lights;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -38,6 +44,9 @@ public class PlayerController : MonoBehaviour
         topCamera.enabled = false;
         mainCamera.enabled = false;
         thirdCamera.enabled = true;
+
+        // Initial light setup
+        lights[0].enabled = true;
 
         xStart = transform.position.x;
         xMin = xStart - xRange;
@@ -63,7 +72,7 @@ public class PlayerController : MonoBehaviour
         transform.Rotate(Vector3.up, Time.deltaTime * turnSpeed * horizontalInput);
 
         // Switching camera view
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.Alpha1)) // Top camera
         {
             topCamera.enabled = true;
             mainCamera.enabled = false;
@@ -82,6 +91,27 @@ public class PlayerController : MonoBehaviour
             thirdCamera.enabled = true;
         }
 
+        // Switching light
+        if (Input.GetKeyDown(KeyCode.Alpha4)) // Top camera
+        {
+            lights[0].enabled = true;
+            lights[1].enabled = false;
+            lights[2].enabled = false;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            lights[0].enabled = false;
+            lights[1].enabled = true;
+            lights[2].enabled = false;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha6))
+        {
+            lights[0].enabled = false;
+            lights[1].enabled = false;
+            lights[2].enabled = true;
+        }
+
+
         // Limiting the player withing a rectangluar domain
         if (transform.position.x > xMax)
             transform.position = new Vector3(xMax, transform.position.y, transform.position.z);
@@ -95,6 +125,7 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            explosionParticles.Play();
             // Launch a projectile from the player
             Instantiate(projectilePrefab, transform.position + new Vector3(0, heightOffset, 0), transform.rotation);
             playerAnimator.SetBool("Jump_b", true);

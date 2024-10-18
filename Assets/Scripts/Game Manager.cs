@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using TMPro;
 using UnityEngine;
 
@@ -13,6 +14,8 @@ public class GameManager : MonoBehaviour
         {100.0f, 0.0f, -10.0f},
         {5.0f, 0.0f, -80.0f},
     };
+
+    public bool[] isZoneEnabled = { true, true, true, true, true };
 
     private int noOfZones = 5;
     private int noOfAnimalsPerZone = 2;
@@ -41,6 +44,9 @@ public class GameManager : MonoBehaviour
     void SpawnRandomAnimal()
     {
         int zone = UnityEngine.Random.Range(0, noOfZones); // Randomly choose a zone from 
+        if (!isZoneEnabled[zone])
+            return;
+
         int coinToss = UnityEngine.Random.Range(0, noOfAnimalsPerZone); // One of the two animals in that zone
         //        int animalIndex = Random.Range(0, animalPrefabs.Length);
         //       float spwanX = Random.Range(-spwanRangeX, spwanRangeX);
