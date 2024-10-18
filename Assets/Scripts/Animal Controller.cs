@@ -10,14 +10,18 @@ public class AnimalController : MonoBehaviour
     private float maxSeconds = 60.0f;
     private float secondsMeasure = 0.0f;
     private float minSpeed, maxSpeed;
+    private bool insideBaseStation = false;
+    private bool failedToFeed = false;
+//    private Rigidbody animalRb;
 
     // Start is called before the first frame update
     void Start()
     {
+//        animalRb = GetComponent<Rigidbody>();
+
         randomSeconds = Random.Range(minSeconds,maxSeconds);
         minSpeed = speed / 2.0f;
         maxSpeed = speed * 2.0f;
-
     }
 
     // Update is called once per frame
@@ -53,6 +57,17 @@ public class AnimalController : MonoBehaviour
         else if (other.gameObject.CompareTag("Human")) // Animals will take u-turn when collide with humans
         {
             transform.forward = -transform.forward;
+        }
+        else if(other.gameObject.CompareTag("Base Station") && !insideBaseStation)
+        {
+            insideBaseStation = true;
+            failedToFeed = false;
+        }
+        else if (insideBaseStation && other.gameObject.CompareTag("Borderline") && !failedToFeed)
+        {
+            failedToFeed = true;
+            insideBaseStation = false;
+            Debug.Log("Failed to Feed!");
         }
     }
 }

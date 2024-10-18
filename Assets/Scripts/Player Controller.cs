@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    // Camera
     public Camera topCamera;
     public Camera mainCamera;
     public Camera thirdCamera;
+
     private float speed = 10.0f;
-    private float turnSpeed = 25.0f;
+    private float turnSpeed = 45.0f;
     private float horizontalInput;
     private float verticalInput;
     private float xRange = 30.0f;
@@ -19,10 +21,19 @@ public class PlayerController : MonoBehaviour
     public GameObject projectilePrefab;
     public float heightOffset = 0.8f;
 
+    // Animation
+    private Animator playerAnimator;
+
+    // Audio
+    private AudioSource playerAudioSource;
+    public AudioClip jumpSound;
 
     // Start is called before the first frame update
     void Start()
     {
+        playerAnimator = GetComponent<Animator>();
+        playerAudioSource = GetComponent<AudioSource>();
+
         // Initially the third person view camera behind the player is enabled
         topCamera.enabled = false;
         mainCamera.enabled = false;
@@ -44,7 +55,9 @@ public class PlayerController : MonoBehaviour
         verticalInput = Input.GetAxis("Vertical");
 
         // Movinng the player forward or backward
-        transform.Translate(Vector3.forward * Time.deltaTime * speed * verticalInput);
+        float s = speed * verticalInput;
+        transform.Translate(Vector3.forward * Time.deltaTime * s);
+        playerAnimator.SetFloat("Speed_f", Mathf.Abs(s));
 
         // Turning the player
         transform.Rotate(Vector3.up, Time.deltaTime * turnSpeed * horizontalInput);
@@ -69,7 +82,6 @@ public class PlayerController : MonoBehaviour
             thirdCamera.enabled = true;
         }
 
-
         // Limiting the player withing a rectangluar domain
         if (transform.position.x > xMax)
             transform.position = new Vector3(xMax, transform.position.y, transform.position.z);
@@ -85,6 +97,10 @@ public class PlayerController : MonoBehaviour
         {
             // Launch a projectile from the player
             Instantiate(projectilePrefab, transform.position + new Vector3(0, heightOffset, 0), transform.rotation);
+            playerAnimator.SetBool("Jump_b", true);
+            playerAudioSource.PlayOneShot(jumpSound, 1.0f);
         }
+        else
+            playerAnimator.SetBool("Jump_b", false);
     }
 }
