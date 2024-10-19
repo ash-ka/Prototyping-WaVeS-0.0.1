@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,6 +17,11 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI animalsVisitingCountText;
     public TextMeshProUGUI gameOverText;
     public TextMeshProUGUI gameOverSubtext;
+    public TextMeshProUGUI toleranceText;
+
+    private float timeElasped;
+
+    public Button restartButton;
 
     public int gameLevel = 1; // 1=Easy, 2=Medium, 3=Hard 
 
@@ -56,44 +63,74 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        timeElasped = 0.0f;
+
         InvokeRepeating("SpawnRandomAnimal", startDelay, spawnInterval);
         gameOverText.enabled = false;
         gameOverSubtext.enabled = false;
+
+        restartButton.gameObject.SetActive(false);
+        toleranceText.text = "Max. Failure Tolerance = " + returnedAnimalTolerance[gameLevel - 1];
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (spawnedAnimalsCount != 0 && spawnedAnimalsCount == fedAnimalsCount)
+        timeElasped += Time.deltaTime;
+
+        if (gameOverStatus == 0)
         {
-            gameOverStatus = 1; // Player wins
-            gameOverText.text = "You Win!";
-            gameOverSubtext.text = "Less than " + animalsFailedToFeedCount+1 + " animal(s) returned untreated.";
-            gameOverText.enabled = true;
-            gameOverSubtext.enabled = true;
+            if (spawnedAnimalsCount != 0 && spawnedAnimalsCount == fedAnimalsCount)
+            {
+                gameOverStatus = 1; // Player wins
+                gameOverText.text = "You Win!";
+                gameOverSubtext.text = "Less than " + (int)(animalsFailedToFeedCount + 1) + " animal(s) returned untreated.";
+                gameOverText.gameObject.SetActive(true);
+                gameOverSubtext.gameObject.SetActive(true);
+                gameOverText.enabled = true;
+                gameOverSubtext.enabled = true;
+                animalsVisitingCountText.enabled = false;
+                restartButton.gameObject.SetActive(true);
+            }
+            else if (animalsFailedToFeedCount > returnedAnimalTolerance[gameLevel - 1])
+            {
+                gameOverStatus = 2; // Player fails
+                gameOverText.text = "Game Over!";
+                gameOverSubtext.text = animalsFailedToFeedCount + " animal(s) returned untreated.";
+                gameOverText.gameObject.SetActive(true);
+                gameOverSubtext.gameObject.SetActive(true);
+                gameOverText.enabled = true;
+                gameOverSubtext.enabled = true;
+                animalsVisitingCountText.enabled = false;
+                restartButton.gameObject.SetActive(true);
+            }
+            else if (Input.GetKeyDown(KeyCode.E))
+            {
+                gameOverStatus = 1; // Player wins
+                gameOverText.text = "Game Ended!";
+                gameOverSubtext.text = "You played for " + timeElasped + " seconds.";
+                gameOverText.gameObject.SetActive(true);
+                gameOverSubtext.gameObject.SetActive(true);
+                gameOverText.enabled = true;
+                gameOverSubtext.enabled = true;
+                animalsVisitingCountText.enabled = false;
+                restartButton.gameObject.SetActive(true);
+            }
+
+            spawnedAnimalsText.text = "#Spawned Animal(s) = " + spawnedAnimalsCount;
+            animalsTreatedText.text = "#Animal(s) Treated = " + fedAnimalsCount;
+            magicCookieWastedText.text = "#Magic Cookie(s) Wasted = " + magicCookieWastedCount;
+            spawnSourceActiveText.text = "#Spawn Source(s) Left = " + spawnSourceActiveCount;
+            animalsFailedToFeedText.text = "#Returned Untreated = " + animalsFailedToFeedCount;
+
+            if (animalsInsideBaseStation == 0)
+                animalsVisitingCountText.text = "";
+            else
+                animalsVisitingCountText.text = animalsInsideBaseStation + " Animal(s) Visiting";
+
+            if (spawnedAnimalsCount >= maxAnimals) // Set animals limit reached or game is over
+                CancelInvoke();
         }
-        else if (animalsFailedToFeedCount > returnedAnimalTolerance[gameLevel - 1])
-        {
-            gameOverStatus = 2; // Player fails
-            gameOverText.text = "Game Over!";
-            gameOverSubtext.text = animalsFailedToFeedCount + " animal(s) returned untreated.";
-            gameOverText.enabled = true;
-            gameOverSubtext.enabled = true;
-        }
-
-        spawnedAnimalsText.text = "#Spawned Animal(s) = " + spawnedAnimalsCount;
-        animalsTreatedText.text = "#Animal(s) Treated = " + fedAnimalsCount;
-        magicCookieWastedText.text = "#Magic Cookie(s) Wasted = " + magicCookieWastedCount;
-        spawnSourceActiveText.text = "#Spawn Source(s) Left = " + spawnSourceActiveCount;
-        animalsFailedToFeedText.text = "#Returned Untreated = " + animalsFailedToFeedCount;
-
-        if (animalsInsideBaseStation == 0)
-            animalsVisitingCountText.text = "";
-        else
-            animalsVisitingCountText.text = animalsInsideBaseStation + " Animal(s) Visiting";
-
-        if (spawnedAnimalsCount >= maxAnimals || gameOverStatus != 0) // Set animals limit reached or game is over
-            CancelInvoke();
     }
 
     void SpawnRandomAnimal()
@@ -115,5 +152,10 @@ public class GameManager : MonoBehaviour
     {
         explosionParticles.transform.position = particlePos;
         explosionParticles.Play();
+    }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

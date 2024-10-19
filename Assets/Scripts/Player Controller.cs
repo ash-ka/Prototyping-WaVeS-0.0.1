@@ -53,7 +53,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (gameManager.gameOverStatus == 1 && !isMusicChanged) // Game over, player wins
+        if (gameManager.gameOverStatus != 0 && !isMusicChanged) // Game over, player wins
         {
             // Background music change
             gameManager.GetComponent<AudioSource>().Stop();
