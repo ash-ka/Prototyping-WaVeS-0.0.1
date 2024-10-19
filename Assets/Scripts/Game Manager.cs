@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour
 
     private float timeElasped;
 
+    private bool spawningStopped = false;
+
     public Button restartButton;
 
     public int gameLevel = 1; // 1=Easy, 2=Medium, 3=Hard 
@@ -85,36 +87,21 @@ public class GameManager : MonoBehaviour
                 gameOverStatus = 1; // Player wins
                 gameOverText.text = "You Win!";
                 gameOverSubtext.text = "Less than " + (int)(animalsFailedToFeedCount + 1) + " animal(s) returned untreated.";
-                gameOverText.gameObject.SetActive(true);
-                gameOverSubtext.gameObject.SetActive(true);
-                gameOverText.enabled = true;
-                gameOverSubtext.enabled = true;
-                animalsVisitingCountText.enabled = false;
-                restartButton.gameObject.SetActive(true);
+                GameOver();
             }
             else if (animalsFailedToFeedCount > returnedAnimalTolerance[gameLevel - 1])
             {
                 gameOverStatus = 2; // Player fails
                 gameOverText.text = "Game Over!";
                 gameOverSubtext.text = animalsFailedToFeedCount + " animal(s) returned untreated.";
-                gameOverText.gameObject.SetActive(true);
-                gameOverSubtext.gameObject.SetActive(true);
-                gameOverText.enabled = true;
-                gameOverSubtext.enabled = true;
-                animalsVisitingCountText.enabled = false;
-                restartButton.gameObject.SetActive(true);
+                GameOver();
             }
             else if (Input.GetKeyDown(KeyCode.E))
             {
                 gameOverStatus = 1; // Player wins
                 gameOverText.text = "Game Ended!";
                 gameOverSubtext.text = "You played for " + timeElasped + " seconds.";
-                gameOverText.gameObject.SetActive(true);
-                gameOverSubtext.gameObject.SetActive(true);
-                gameOverText.enabled = true;
-                gameOverSubtext.enabled = true;
-                animalsVisitingCountText.enabled = false;
-                restartButton.gameObject.SetActive(true);
+                GameOver();
             }
 
             spawnedAnimalsText.text = "#Spawned Animal(s) = " + spawnedAnimalsCount;
@@ -129,7 +116,10 @@ public class GameManager : MonoBehaviour
                 animalsVisitingCountText.text = animalsInsideBaseStation + " Animal(s) Visiting";
 
             if (spawnedAnimalsCount >= maxAnimals) // Set animals limit reached or game is over
+            {
+                spawningStopped = true;
                 CancelInvoke();
+            }
         }
     }
 
@@ -152,6 +142,19 @@ public class GameManager : MonoBehaviour
     {
         explosionParticles.transform.position = particlePos;
         explosionParticles.Play();
+    }
+
+    public void GameOver()
+    {
+        gameOverText.gameObject.SetActive(true);
+        gameOverSubtext.gameObject.SetActive(true);
+        gameOverText.enabled = true;
+        gameOverSubtext.enabled = true;
+        animalsVisitingCountText.enabled = false;
+        restartButton.gameObject.SetActive(true);
+
+        if (!spawningStopped)
+            CancelInvoke(); // Stop spawning
     }
 
     public void RestartGame()
