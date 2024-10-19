@@ -53,7 +53,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (gameManager.gameOverStatus != 0 && !isMusicChanged) // Game over, player wins
+        if (gameManager.gameOverStatus != 0 && !isMusicChanged && gameManager.isGameActive != true) // Game over, player wins
         {
             // Background music change
             gameManager.GetComponent<AudioSource>().Stop();
@@ -62,7 +62,7 @@ public class PlayerController : MonoBehaviour
 
             SetLight(4); // Nighttime litght setup
         }
-        else if (gameManager.gameOverStatus == 0) // Game not over yet
+        else if (gameManager.gameOverStatus == 0 && gameManager.isGameActive) // Game not over yet
         {
             // This is where we get player input
             horizontalInput = Input.GetAxis("Horizontal");

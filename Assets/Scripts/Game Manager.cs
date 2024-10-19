@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI gameOverSubtext;
     public TextMeshProUGUI toleranceText;
 
+    public bool isGameActive = false;
+
     private float timeElasped;
 
     private bool spawningStopped = false;
@@ -76,7 +78,7 @@ public class GameManager : MonoBehaviour
     {
         timeElasped += Time.deltaTime;
 
-        if (gameOverStatus == 0)
+        if (gameOverStatus == 0 && isGameActive)
         {
             if (spawnedAnimalsCount != 0 && spawnedAnimalsCount == fedAnimalsCount)
             {
@@ -151,6 +153,8 @@ public class GameManager : MonoBehaviour
 
         if (!spawningStopped)
             CancelInvoke(); // Stop spawning
+
+        isGameActive = false;
     }
 
     public void RestartGame()
@@ -173,5 +177,7 @@ public class GameManager : MonoBehaviour
 
         titleScreen.gameObject.SetActive(false);
         infoPanel.gameObject.SetActive(true);
+
+        isGameActive = true;
     }
 }

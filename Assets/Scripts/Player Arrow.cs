@@ -21,7 +21,7 @@ public class PlayerArrow : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.H) && gameManager.gameOverStatus == 0) // Controlling player help arrow if game is not over
+        if (Input.GetKeyDown(KeyCode.H) && gameManager.gameOverStatus == 0 && gameManager.isGameActive) // Controlling player help arrow if game is not over
         {
             isActive = !isActive;
 
