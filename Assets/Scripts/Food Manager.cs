@@ -45,6 +45,9 @@ public class FoodManager : MonoBehaviour
         {
             gameManager.fedAnimalsCount++;
 
+            if(other.gameObject.GetComponent<AnimalController>().IsInsideBaseStation())
+                gameManager.animalsInsideBaseStation--;
+
             Destroy(other.gameObject); // Destroy the animal object
 
             theRenderer.enabled = false;

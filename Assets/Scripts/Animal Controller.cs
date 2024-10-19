@@ -47,18 +47,11 @@ public class AnimalController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Boundary Object")) // Anmials will take u-turns when they collide with the boundary
-        {
             transform.forward = -transform.forward;
-        }
         else if (other.gameObject.CompareTag("Animal")) // Animal behavior when encountering other animals
-        {
             transform.Rotate(Vector3.up, 120.0f); // Animals rotate 120 degrees when they encounter other animals
-            //            transform.forward = -transform.forward;  // Anmials will take u-turns when they collide
-        }
         else if (other.gameObject.CompareTag("Human")) // Animals will take u-turn when collide with humans
-        {
             transform.forward = -transform.forward;
-        }
         else if(other.gameObject.CompareTag("Base Station") && !insideBaseStation)
         {
             insideBaseStation = true;
@@ -76,11 +69,8 @@ public class AnimalController : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
+    public bool IsInsideBaseStation()
     {
-        if (insideBaseStation)
-        {
-            gameManager.animalsInsideBaseStation--;
-        }
+        return insideBaseStation;
     }
 }
