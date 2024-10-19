@@ -39,6 +39,11 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        lights[0].enabled = true;
+        lights[1].enabled = false;
+        lights[2].enabled = false;
+        lights[3].enabled = false;
+
         gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
 
         playerAnimator = GetComponent<Animator>();
@@ -69,6 +74,11 @@ public class PlayerController : MonoBehaviour
             gameManager.GetComponent<AudioSource>().Stop();
             playerAudioSource.Play();
             isMusicChanged = true;
+
+            lights[0].enabled = false;
+            lights[1].enabled = false;
+            lights[2].enabled = false;
+            lights[3].enabled = true;
         }
 
         // This is where we get player input
