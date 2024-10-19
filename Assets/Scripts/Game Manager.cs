@@ -7,6 +7,8 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public ParticleSystem explosionParticles;
+
     public GameObject[] animalPrefabs;
     public float[,] zoneData = { {105.0f, 0.0f, 100.0f },
         {-65.0f, 0.0f, -5.0f},
@@ -24,7 +26,8 @@ public class GameManager : MonoBehaviour
     private float spawnInterval = 1.5f;
 
     public int maxAnimals;
-    private int spawnedAnimals = 0;
+    public int spawnedAnimals = 0;
+    public int fedAnimals = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -57,5 +60,11 @@ public class GameManager : MonoBehaviour
 
         Instantiate(animalPrefabs[animalID], spwanPos, initalRotation);
         spawnedAnimals++;
+    }
+
+    public void PlayParticleEffect(Vector3 particlePos)
+    {
+        explosionParticles.transform.position = particlePos;
+        explosionParticles.Play();
     }
 }

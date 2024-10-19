@@ -6,8 +6,6 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public ParticleSystem explosionParticles;
-
     // Camera
     public Camera topCamera;
     public Camera mainCamera;
@@ -34,9 +32,15 @@ public class PlayerController : MonoBehaviour
 
     public Light[] lights;
 
+    private GameManager gameManager;
+
+    bool isMusicChanged = false;
+
     // Start is called before the first frame update
     void Start()
     {
+        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
+
         playerAnimator = GetComponent<Animator>();
         playerAudioSource = GetComponent<AudioSource>();
 
@@ -59,6 +63,14 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (gameManager.spawnedAnimals != 0 && gameManager.spawnedAnimals == gameManager.fedAnimals && !isMusicChanged)
+        {
+            Debug.Log("Music change!");
+            gameManager.GetComponent<AudioSource>().Stop();
+            playerAudioSource.Play();
+            isMusicChanged = true;
+        }
+
         // This is where we get player input
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
@@ -125,7 +137,6 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            explosionParticles.Play();
             // Launch a projectile from the player
             Instantiate(projectilePrefab, transform.position + new Vector3(0, heightOffset, 0), transform.rotation);
             playerAnimator.SetBool("Jump_b", true);

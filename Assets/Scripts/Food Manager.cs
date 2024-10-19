@@ -19,6 +19,8 @@ public class FoodManager : MonoBehaviour
 
     private GameManager gameManager;
 
+    public ParticleSystem explosionParticles;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,6 +45,8 @@ public class FoodManager : MonoBehaviour
 
         if (other.gameObject.CompareTag("Animal") && !toBeDestroyed)
         {
+            gameManager.fedAnimals++;
+
             Destroy(other.gameObject); // Destroy the animal object
 
             theRenderer.enabled = false;
@@ -60,6 +64,8 @@ public class FoodManager : MonoBehaviour
         }
         else if (other.gameObject.CompareTag("Stop Spawn (1)"))
         {
+            gameManager.PlayParticleEffect(other.gameObject.transform.position);
+
             gameManager.isZoneEnabled[0] = false;
             Destroy(other.gameObject);
 
@@ -71,6 +77,8 @@ public class FoodManager : MonoBehaviour
         }
         else if (other.gameObject.CompareTag("Stop Spawn (2)"))
         {
+            gameManager.PlayParticleEffect(other.gameObject.transform.position);
+
             gameManager.isZoneEnabled[1] = false;
             Destroy(other.gameObject);
 
@@ -82,6 +90,8 @@ public class FoodManager : MonoBehaviour
         }
         else if (other.gameObject.CompareTag("Stop Spawn (3)"))
         {
+            gameManager.PlayParticleEffect(other.gameObject.transform.position);
+
             gameManager.isZoneEnabled[2] = false;
             Destroy(other.gameObject);
 
@@ -93,6 +103,8 @@ public class FoodManager : MonoBehaviour
         }
         else if (other.gameObject.CompareTag("Stop Spawn (4)"))
         {
+            gameManager.PlayParticleEffect(other.gameObject.transform.position);
+
             gameManager.isZoneEnabled[3] = false;
             Destroy(other.gameObject);
 
@@ -104,6 +116,8 @@ public class FoodManager : MonoBehaviour
         }
         else if (other.gameObject.CompareTag("Stop Spawn (5)"))
         {
+            gameManager.PlayParticleEffect(other.gameObject.transform.position);
+
             gameManager.isZoneEnabled[4] = false;
             Destroy(other.gameObject);
 
