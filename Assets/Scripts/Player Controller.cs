@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditor.Profiling.Memory.Experimental;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -19,9 +20,13 @@ public class PlayerController : MonoBehaviour
     private float zRange = 30.0f;
     private float xStart;
     private float zStart;
+    private Quaternion initialRotation;
     private float xMin, zMin, xMax, zMax;
     public GameObject projectilePrefab;
     public float heightOffset = 0.8f;
+
+    private int defaultCameraNumber = 1;
+    private int defaultLightNumber = 1;
 
     // Animation
     private Animator playerAnimator;
@@ -39,46 +44,24 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        lights[0].enabled = true;
-        lights[1].enabled = false;
-        lights[2].enabled = false;
-        lights[3].enabled = false;
-
         gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
-
         playerAnimator = GetComponent<Animator>();
         playerAudioSource = GetComponent<AudioSource>();
-
-        // Initially the third person view camera behind the player is enabled
-        topCamera.enabled = false;
-        mainCamera.enabled = false;
-        thirdCamera.enabled = true;
-
-        // Initial light setup
-        lights[0].enabled = true;
-
-        xStart = transform.position.x;
-        xMin = xStart - xRange;
-        xMax = xStart + xRange;
-        zStart = transform.position.z;
-        zMin = zStart - zRange;
-        zMax = zStart + zRange;
+        
+        InitializePlayer();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (gameManager.spawnedAnimals != 0 && gameManager.spawnedAnimals == gameManager.fedAnimals && !isMusicChanged)
+        if (gameManager.spawnedAnimalsCount != 0 && gameManager.spawnedAnimalsCount == gameManager.fedAnimalsCount && !isMusicChanged)
         {
-            Debug.Log("Music change!");
+            // Background music change
             gameManager.GetComponent<AudioSource>().Stop();
             playerAudioSource.Play();
             isMusicChanged = true;
-
-            lights[0].enabled = false;
-            lights[1].enabled = false;
-            lights[2].enabled = false;
-            lights[3].enabled = true;
+            
+            SetLight(4); // Nighttime litght setup
         }
 
         // This is where we get player input
@@ -94,56 +77,23 @@ public class PlayerController : MonoBehaviour
         transform.Rotate(Vector3.up, Time.deltaTime * turnSpeed * horizontalInput);
 
         // Switching camera view
-        if (Input.GetKeyDown(KeyCode.Alpha1)) // Top camera
-        {
-            topCamera.enabled = true;
-            mainCamera.enabled = false;
-            thirdCamera.enabled = false;
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha2)) 
-        {
-            topCamera.enabled = false;
-            mainCamera.enabled = true;
-            thirdCamera.enabled = false;
-        }
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+            SetCamera(1);
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+            SetCamera(2);
         else if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            topCamera.enabled = false;
-            mainCamera.enabled = false;
-            thirdCamera.enabled = true;
-        }
+            SetCamera(3);
 
-        // Switching light
-        if (Input.GetKeyDown(KeyCode.Alpha4)) // Top camera
-        {
-            lights[0].enabled = true;
-            lights[1].enabled = false;
-            lights[2].enabled = false;
-        }
+        // Switching lights
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+            SetLight(1);
         else if (Input.GetKeyDown(KeyCode.Alpha5))
-        {
-            lights[0].enabled = false;
-            lights[1].enabled = true;
-            lights[2].enabled = false;
-        }
+            SetLight(2);
         else if (Input.GetKeyDown(KeyCode.Alpha6))
-        {
-            lights[0].enabled = false;
-            lights[1].enabled = false;
-            lights[2].enabled = true;
-        }
-
+            SetLight(3);
 
         // Limiting the player withing a rectangluar domain
-        if (transform.position.x > xMax)
-            transform.position = new Vector3(xMax, transform.position.y, transform.position.z);
-        if (transform.position.x < xMin)
-            transform.position = new Vector3(xMin, transform.position.y, transform.position.z);
-
-        if (transform.position.z > zMax)
-            transform.position = new Vector3(transform.position.x, transform.position.y, zMax);
-        if (transform.position.z < zMin)
-            transform.position = new Vector3(transform.position.x, transform.position.y, zMin);
+        LimitPlayer();
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -154,5 +104,71 @@ public class PlayerController : MonoBehaviour
         }
         else
             playerAnimator.SetBool("Jump_b", false);
+    }
+
+    public void InitializePlayer()
+    {
+        SetCamera(defaultCameraNumber); // Camera setup
+        SetLight(defaultLightNumber); // Light setup
+
+        // Obtaining player's position
+        xStart = transform.position.x;
+        zStart = transform.position.z;
+
+        initialRotation  =  transform.rotation; // Obtaining initial rotation of the player
+
+        // Definint player's boundary
+        xMin = xStart - xRange;
+        xMax = xStart + xRange;
+        zMin = zStart - zRange;
+        zMax = zStart + zRange;
+    }
+
+    private void LimitPlayer()
+    {
+        if (transform.position.x > xMax)
+            transform.position = new Vector3(xMax, transform.position.y, transform.position.z);
+        if (transform.position.x < xMin)
+            transform.position = new Vector3(xMin, transform.position.y, transform.position.z);
+
+        if (transform.position.z > zMax)
+            transform.position = new Vector3(transform.position.x, transform.position.y, zMax);
+        if (transform.position.z < zMin)
+            transform.position = new Vector3(transform.position.x, transform.position.y, zMin);
+    }
+
+    private void SetLight(int lightNumber)
+    {
+        lights[0].enabled = false;
+        lights[1].enabled = false;
+        lights[2].enabled = false;
+        lights[3].enabled = false;
+
+        lights[lightNumber - 1].enabled = true;
+    }
+
+    private void SetCamera(int cameraNumber)
+    {
+        switch (cameraNumber)
+        {
+            case 1:
+//            default:
+                topCamera.enabled = false;
+                mainCamera.enabled = false;
+                thirdCamera.enabled = true;
+                break;
+
+            case 2:
+                topCamera.enabled = false;
+                mainCamera.enabled = true;
+                thirdCamera.enabled = false;
+                break;
+
+            case 3:
+                topCamera.enabled = true;
+                mainCamera.enabled = false;
+                thirdCamera.enabled = false;
+                break;
+        }
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Unity.VisualScripting.Member;
 
 public class FoodManager : MonoBehaviour
 {
@@ -40,12 +41,9 @@ public class FoodManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-//        if (other.gameObject.CompareTag("Human"))
-//            return;
-
         if (other.gameObject.CompareTag("Animal") && !toBeDestroyed)
         {
-            gameManager.fedAnimals++;
+            gameManager.fedAnimalsCount++;
 
             Destroy(other.gameObject); // Destroy the animal object
 
@@ -59,73 +57,38 @@ public class FoodManager : MonoBehaviour
         {
             theRenderer.enabled = false;
 
+            gameManager.magicCookieWastedCount++;
+
             audioSource.PlayOneShot(crunchySound, 1.0f); // Play joyful sound
             Destroy(gameObject, crunchySound.length * 5); // Destroy the food object
         }
+        // Destroy a spawn potion source
         else if (other.gameObject.CompareTag("Stop Spawn (1)"))
-        {
-            gameManager.PlayParticleEffect(other.gameObject.transform.position);
-
-            gameManager.isZoneEnabled[0] = false;
-            Destroy(other.gameObject);
-
-            theRenderer.enabled = false;
-            toBeDestroyed = true;
-
-            audioSource.PlayOneShot(potionCrash, 1.0f); // Play joyful sound
-            Destroy(gameObject, potionCrash.length * 5); // Destroy the food object
-        }
+            DestroySpawnSource(1, other);
         else if (other.gameObject.CompareTag("Stop Spawn (2)"))
-        {
-            gameManager.PlayParticleEffect(other.gameObject.transform.position);
-
-            gameManager.isZoneEnabled[1] = false;
-            Destroy(other.gameObject);
-
-            theRenderer.enabled = false;
-            toBeDestroyed = true;
-
-            audioSource.PlayOneShot(potionCrash, 1.0f); // Play joyful sound
-            Destroy(gameObject, potionCrash.length * 5); // Destroy the food object
-        }
+            DestroySpawnSource(2, other);
         else if (other.gameObject.CompareTag("Stop Spawn (3)"))
-        {
-            gameManager.PlayParticleEffect(other.gameObject.transform.position);
-
-            gameManager.isZoneEnabled[2] = false;
-            Destroy(other.gameObject);
-
-            theRenderer.enabled = false;
-            toBeDestroyed = true;
-
-            audioSource.PlayOneShot(potionCrash, 1.0f); // Play joyful sound
-            Destroy(gameObject, potionCrash.length * 5); // Destroy the food object
-        }
+            DestroySpawnSource(3, other);
         else if (other.gameObject.CompareTag("Stop Spawn (4)"))
-        {
-            gameManager.PlayParticleEffect(other.gameObject.transform.position);
-
-            gameManager.isZoneEnabled[3] = false;
-            Destroy(other.gameObject);
-
-            theRenderer.enabled = false;
-            toBeDestroyed = true;
-
-            audioSource.PlayOneShot(potionCrash, 1.0f); // Play joyful sound
-            Destroy(gameObject, potionCrash.length * 5); // Destroy the food object
-        }
+            DestroySpawnSource(4, other);
         else if (other.gameObject.CompareTag("Stop Spawn (5)"))
-        {
-            gameManager.PlayParticleEffect(other.gameObject.transform.position);
+            DestroySpawnSource(5, other);
+    }
 
-            gameManager.isZoneEnabled[4] = false;
-            Destroy(other.gameObject);
+    private void DestroySpawnSource(int sourceID, Collider other)
+    {
+        int sourceIndex = sourceID - 1;
+        gameManager.PlayParticleEffect(other.gameObject.transform.position);
 
-            theRenderer.enabled = false;
-            toBeDestroyed = true;
+        gameManager.spawnSourceActiveCount--;
 
-            audioSource.PlayOneShot(potionCrash, 1.0f); // Play joyful sound
-            Destroy(gameObject, potionCrash.length * 5); // Destroy the food object
-        }
+        gameManager.isZoneEnabled[sourceIndex] = false;
+        Destroy(other.gameObject);
+
+        theRenderer.enabled = false;
+        toBeDestroyed = true;
+
+        audioSource.PlayOneShot(potionCrash, 1.0f); // Play joyful sound
+        Destroy(gameObject, potionCrash.length * 5); // Destroy the food object
     }
 }

@@ -12,12 +12,13 @@ public class AnimalController : MonoBehaviour
     private float minSpeed, maxSpeed;
     private bool insideBaseStation = false;
     private bool failedToFeed = false;
-//    private Rigidbody animalRb;
+
+    private GameManager gameManager;
 
     // Start is called before the first frame update
     void Start()
     {
-//        animalRb = GetComponent<Rigidbody>();
+        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
 
         randomSeconds = Random.Range(minSeconds,maxSeconds);
         minSpeed = speed / 2.0f;
@@ -62,12 +63,24 @@ public class AnimalController : MonoBehaviour
         {
             insideBaseStation = true;
             failedToFeed = false;
+
+            gameManager.animalsInsideBaseStation++;
         }
         else if (insideBaseStation && other.gameObject.CompareTag("Borderline") && !failedToFeed)
         {
             failedToFeed = true;
             insideBaseStation = false;
-            Debug.Log("Failed to Feed!");
+            gameManager.animalsInsideBaseStation--;
+            
+            gameManager.animalsFailedToFeedCount++;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (insideBaseStation)
+        {
+            gameManager.animalsInsideBaseStation--;
         }
     }
 }
