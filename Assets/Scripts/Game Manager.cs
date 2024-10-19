@@ -62,17 +62,13 @@ public class GameManager : MonoBehaviour
     // To do: replace with enum
     public int gameOverStatus = 0; // 0=Not yet over, 1=Player wins, 2=Player fails 
 
+    public GameObject titleScreen;
+    public GameObject infoPanel;
+
     // Start is called before the first frame update
     void Start()
     {
-        timeElasped = 0.0f;
 
-        InvokeRepeating("SpawnRandomAnimal", startDelay, spawnInterval);
-        gameOverText.enabled = false;
-        gameOverSubtext.enabled = false;
-
-        restartButton.gameObject.SetActive(false);
-        toleranceText.text = "Max. Failure Tolerance = " + returnedAnimalTolerance[gameLevel - 1];
     }
 
     // Update is called once per frame
@@ -160,5 +156,22 @@ public class GameManager : MonoBehaviour
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void StartGame(int difficulty)
+    {
+        timeElasped = 0.0f;
+
+        gameLevel = difficulty;
+
+        InvokeRepeating("SpawnRandomAnimal", startDelay, spawnInterval);
+        gameOverText.enabled = false;
+        gameOverSubtext.enabled = false;
+
+        restartButton.gameObject.SetActive(false);
+        toleranceText.text = "Max. Failure Tolerance = " + returnedAnimalTolerance[gameLevel - 1];
+
+        titleScreen.gameObject.SetActive(false);
+        infoPanel.gameObject.SetActive(true);
     }
 }
