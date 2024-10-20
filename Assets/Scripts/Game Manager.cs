@@ -97,7 +97,7 @@ public class GameManager : MonoBehaviour
                 gameOverSubtext.text = animalsFailedToFeedCount + " animal(s) returned untreated.";
                 GameOver();
             }
-            else if (Input.GetKeyDown(KeyCode.Q))
+            else if (Input.GetKeyDown(KeyCode.E))
             {
                 gameOverStatus = 1; // Player ends the game
                 gameOverText.text = "Game Ended!";
