@@ -24,8 +24,9 @@ public class PlayerController : MonoBehaviour
     public GameObject projectilePrefab;
     public float heightOffset = 0.8f;
 
-    private int defaultCameraNumber = 1;
-    private int defaultLightNumber = 1;
+    public int defaultCameraNumber = 1;
+    public int defaultLightNumber = 1;
+    public int gameInactiveLight = 4;
 
     // Animation
     private Animator playerAnimator;
@@ -59,8 +60,6 @@ public class PlayerController : MonoBehaviour
             gameManager.GetComponent<AudioSource>().Stop();
             playerAudioSource.Play();
             isMusicChanged = true;
-
-            SetLight(4); // Nighttime litght setup
         }
         else if (gameManager.gameOverStatus == 0 && gameManager.isGameActive) // Game not over yet
         {
@@ -114,9 +113,6 @@ public class PlayerController : MonoBehaviour
 
     public void InitializePlayer()
     {
-        SetCamera(defaultCameraNumber); // Camera setup
-        SetLight(defaultLightNumber); // Light setup
-
         // Obtaining player's position
         xStart = transform.position.x;
         zStart = transform.position.z;
@@ -143,17 +139,50 @@ public class PlayerController : MonoBehaviour
             transform.position = new Vector3(transform.position.x, transform.position.y, zMin);
     }
 
-    private void SetLight(int lightNumber)
+    public void SetLight(int lightNumber)
     {
+        /*
         lights[0].enabled = false;
         lights[1].enabled = false;
         lights[2].enabled = false;
         lights[3].enabled = false;
 
-        lights[lightNumber - 1].enabled = true;
+        lights[lightNumber - 1].enabled = true;*/
+
+        switch(lightNumber) 
+        {
+            case 1:
+            default:
+                lights[0].enabled = true;
+                lights[1].enabled = false;
+                lights[2].enabled = false;
+                lights[3].enabled = false;
+                break;
+
+            case 2:
+                lights[0].enabled = false;
+                lights[1].enabled = true;
+                lights[2].enabled = false;
+                lights[3].enabled = false;
+                break;
+
+            case 3:
+                lights[0].enabled = false;
+                lights[1].enabled = false;
+                lights[2].enabled = true;
+                lights[3].enabled = false;
+                break;
+
+            case 4:
+                lights[0].enabled = false;
+                lights[1].enabled = false;
+                lights[2].enabled = false;
+                lights[3].enabled = true;
+                break;
+        }
     }
 
-    private void SetCamera(int cameraNumber)
+    public void SetCamera(int cameraNumber)
     {
         switch (cameraNumber)
         {

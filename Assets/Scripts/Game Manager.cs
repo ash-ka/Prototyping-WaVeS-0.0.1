@@ -67,10 +67,13 @@ public class GameManager : MonoBehaviour
     public GameObject titleScreen;
     public GameObject infoPanel;
 
+    private PlayerController playerController;
+
     // Start is called before the first frame update
     void Start()
     {
-
+        playerController = GameObject.Find("Player").GetComponent<PlayerController>();
+        playerController.SetLight(playerController.gameInactiveLight); // Light setup
     }
 
     // Update is called once per frame
@@ -94,9 +97,9 @@ public class GameManager : MonoBehaviour
                 gameOverSubtext.text = animalsFailedToFeedCount + " animal(s) returned untreated.";
                 GameOver();
             }
-            else if (Input.GetKeyDown(KeyCode.E))
+            else if (Input.GetKeyDown(KeyCode.Q))
             {
-                gameOverStatus = 1; // Player wins
+                gameOverStatus = 1; // Player ends the game
                 gameOverText.text = "Game Ended!";
                 gameOverSubtext.text = "You played for " + timeElasped + " seconds.";
                 GameOver();
@@ -154,6 +157,8 @@ public class GameManager : MonoBehaviour
         if (!spawningStopped)
             CancelInvoke(); // Stop spawning
 
+
+        playerController.SetLight(playerController.gameInactiveLight); // Nighttime litght setup
         isGameActive = false;
     }
 
@@ -171,6 +176,9 @@ public class GameManager : MonoBehaviour
         InvokeRepeating("SpawnRandomAnimal", startDelay, spawnInterval);
         gameOverText.enabled = false;
         gameOverSubtext.enabled = false;
+
+        playerController.SetCamera(playerController.defaultCameraNumber); // Camera setup
+        playerController.SetLight(playerController.defaultLightNumber); // Light setup
 
         restartButton.gameObject.SetActive(false);
         toleranceText.text = "Max. Failure Tolerance = " + returnedAnimalTolerance[gameLevel - 1];
