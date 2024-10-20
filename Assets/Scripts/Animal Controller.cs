@@ -11,7 +11,6 @@ public class AnimalController : MonoBehaviour
     private float secondsMeasure = 0.0f;
     private float minSpeed, maxSpeed;
     private bool insideBaseStation = false;
-    private bool failedToFeed = false;
 
     private GameManager gameManager;
 
@@ -55,16 +54,18 @@ public class AnimalController : MonoBehaviour
         else if(other.gameObject.CompareTag("Base Station") && !insideBaseStation)
         {
             insideBaseStation = true;
-            failedToFeed = false;
 
             gameManager.animalsInsideBaseStation++;
         }
-        else if (insideBaseStation && other.gameObject.CompareTag("Borderline") && !failedToFeed)
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Base Station") && insideBaseStation)
         {
-            failedToFeed = true;
             insideBaseStation = false;
             gameManager.animalsInsideBaseStation--;
-            
+
             gameManager.animalsFailedToFeedCount++;
         }
     }
