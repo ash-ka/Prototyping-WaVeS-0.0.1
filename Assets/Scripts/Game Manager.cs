@@ -168,7 +168,7 @@ public class GameManager : MonoBehaviour
 
         gameLevel = difficulty;
 
-//        InvokeRepeating("SpawnRandomAnimal", startDelay, spawnInterval);
+        InvokeRepeating("SpawnRandomAnimal", startDelay, spawnInterval);
         gameOverText.enabled = false;
         gameOverSubtext.enabled = false;
 
